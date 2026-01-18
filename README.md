@@ -1,168 +1,90 @@
-# 🎥 Video Gen — AI Text-to-Video Generator (Next.js + Replicate + Perplexity)
+# Video Gen — AI Prompt Refinement and Text-to-Video Generation
 
-A full-stack AI Video Generation project that:
-1) Takes a user prompt + style  
-2) Refines the prompt using **Perplexity (Sonar model)**  
-3) Generates a short AI video using **Replicate (minimax/video-01)**  
-4) Returns the final video URL + generation metadata
+Video Gen is a full-stack AI application that refines user prompts into high-quality video-generation prompts and then generates short videos using a text-to-video model. The project combines prompt engineering with automated video generation to produce more consistent and visually aligned results.
 
 ---
 
-## ✨ Features
+## Overview
 
-- ✅ Text → Refined Prompt (Perplexity Sonar)
-- ✅ Refined Prompt → Video (Replicate Minimax / Hailuo)
-- ✅ Supports styles (cinematic / realistic / anime / etc.)
-- ✅ Returns:
-  - video URL
+The application is designed around a two-stage pipeline:
+
+1. Prompt refinement to enhance clarity, detail, and style consistency  
+2. Text-to-video generation using the refined prompt as input  
+
+This approach improves output quality compared to directly sending raw user prompts to a video model.
+
+---
+
+## Key Features
+
+- Prompt refinement for improved video generation quality
+- Style-aware prompt enhancement (e.g., cinematic, realistic, animated)
+- Text-to-video generation using a hosted inference model
+- Prediction tracking with status polling until completion
+- Returns generation metadata:
+  - output video URL
   - prediction ID
-  - time taken (seconds)
-- ✅ Built with modern UI stack (Radix UI + Tailwind + React Hook Form)
+  - time taken for generation
 
 ---
 
-## 🧠 Tech Stack
+## Tech Stack
 
-### Frontend
-- **Next.js 16**
-- **React 19**
-- **Tailwind CSS**
-- **Radix UI**
-- **React Hook Form + Zod**
+Frontend:
+- Next.js
+- React
+- Tailwind CSS
+- Radix UI
+- React Hook Form
+- Zod
 
-### Backend / AI Integrations
-- **Replicate API** (Video Generation)
-- **Perplexity API** (Prompt Refinement)
-
----
-
-## 📦 Dependencies Used (Important Imports)
-
-### AI / API
-- `replicate` → used to create and poll video generation predictions
-- `requests` → used to call Perplexity Chat Completions API
-- `dotenv` → loads API keys from `.env`
-
-### Node / UI (from package.json)
-- `next`, `react`, `react-dom`
-- `replicate` (Node SDK)
-- `zod`, `react-hook-form`
-- `@radix-ui/*` components
-- `lucide-react`, `recharts`, etc.
+AI / API Integrations:
+- Perplexity API (prompt refinement)
+- Replicate API (video generation)
 
 ---
 
-## 🎬 Video Generation (Replicate)
+## Models Used
 
-### Model Used
-- **Replicate Model:** `minimax/video-01`
-- Default model in code:
-  ```py
-  def generate_video_with_replicate(prompt: str, model: str = "minimax/video-01"):
-How it Works
-Creates a prediction:
+Prompt Refinement:
+- Provider: Perplexity
+- Model: sonar
+- Purpose: Enhances and rewrites user prompts into a format optimized for video generation
 
-py
-Copy code
-replicate.predictions.create(
-    model=model,
-    input={"prompt": prompt}
-)
-Polls until status becomes:
+Video Generation:
+- Provider: Replicate
+- Model: minimax/video-01
+- Purpose: Generates short videos from text prompts
 
-succeeded
+---
 
-failed
+## How It Works
 
-canceled
+1. The user submits a prompt and selects a style  
+2. The prompt is refined using Perplexity to produce a video-ready version  
+3. The refined prompt is sent to Replicate for video generation  
+4. The system waits for the prediction to complete and returns the final output  
 
-Output
-If succeeded:
+---
 
-returns video_url
+## Environment Variables
 
-returns prediction_id
+The project requires the following environment variables:
 
-returns time_taken_sec
+- REPLICATE_API_TOKEN  
+- PERPLEXITY_API_KEY  
 
-✍️ Prompt Refinement (Perplexity)
-Model Used
-Perplexity model: sonar
+These values should be stored in a `.env` file and must not be committed to source control.
 
-Endpoint Used
-https://api.perplexity.ai/chat/completions
+---
 
-Behavior
-The system prompt ensures:
+## Running the Project Locally
 
-ONLY refined prompt is returned
-
-No extra headings like “Refined Prompt:”
-
-No explanation text
-
-🔑 Environment Variables
-Create a .env file in the root and add:
-
-env
-Copy code
-REPLICATE_API_TOKEN=your_replicate_api_token
-PERPLEXITY_API_KEY=your_perplexity_api_key
-🚀 Run Locally
-1) Install dependencies
-bash
-Copy code
+1. Install dependencies  
+```bash
 npm install
-2) Start development server
-bash
-Copy code
+2. Start the developement server
 npm run dev
-3) Build for production
-bash
-Copy code
+3. Build and run in production mode
 npm run build
 npm start
-🧾 API Keys / Credits Info
-Replicate Credits
-Video generation uses Replicate credits
-
-Billing depends on the model provider + video duration / compute
-
-Perplexity Credits
-Prompt refinement uses Perplexity API credits
-
-Model used: Sonar
-
-You must have an active API key with remaining credits
-
-📜 License & Attribution
-This project uses external services and libraries:
-
-External Services
-Replicate API (video generation)
-
-Perplexity API (prompt refinement)
-
-Libraries
-replicate SDK
-
-requests
-
-python-dotenv
-
-Next.js, React, Tailwind, Radix UI, etc.
-
-⚠️ Note: The generated videos are subject to the terms of the model provider (minimax/video-01) and Replicate’s policies.
-
-📌 Notes / Best Practices
-Never expose API keys in frontend code
-
-Always keep .env in .gitignore
-
-Polling is done every 5 seconds until completion
-
-Handle failed predictions gracefully
-
-👤 Author
-Ridhima Garg
-GitHub: ridhimagarg23
