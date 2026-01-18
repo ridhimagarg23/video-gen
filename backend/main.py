@@ -21,7 +21,8 @@ def home():
 
 @app.route("/api/generate", methods=["POST"])
 def generate():
-    data = request.get_json()
+    data = request.get_json(silent=True) or {}
+
 
     prompt = data.get("prompt")
     style = data.get("style")
