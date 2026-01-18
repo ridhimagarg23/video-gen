@@ -25,7 +25,20 @@ export async function POST(request: Request) {
       }),
     })
 
-    const data = await response.json()
+    // const data = await response.json()
+    const text = await response.text()
+    console.log("FLASK RAW RESPONSE:", text)
+
+    let data
+    try {
+      data = JSON.parse(text)
+    } catch {
+      return Response.json(
+        { status: "error", message: "Flask returned HTML/Non-JSON", raw: text },
+        { status: 500 }
+      )
+    }
+
 
     // If Flask returns error
     if (!response.ok) {
